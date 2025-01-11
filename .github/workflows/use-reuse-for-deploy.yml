@@ -74,6 +74,8 @@ jobs:
     needs: build
     # Deploy using the re-usable workflow..
     uses: ./.github/workflows/reusable.yml
+    with:
+      artifact-name: 'dist-files'
   report:
       # Run this step only if something fails in the previous steps.
       needs: [lint, deploy]
