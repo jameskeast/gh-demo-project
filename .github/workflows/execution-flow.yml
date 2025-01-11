@@ -77,11 +77,10 @@ jobs:
       - name: Deploy
         run: echo "Deploying..."
   report:
-      runs-on: ubuntu-latest
       # Run this step only if something fails in the previous steps.
-      # Really only needs lint and deploy since this covers all failures based
-      # on he chain.
       needs: [lint, deploy]
+      if: failure()
+      runs-on: ubuntu-latest
       steps:
         - name: Output information
           run: |
