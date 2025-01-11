@@ -76,3 +76,15 @@ jobs:
         run: ls
       - name: Deploy
         run: echo "Deploying..."
+  report:
+      runs-on: ubuntu-latest
+      steps:
+        # Run this step only if something fails in the previous steps.
+        # Really only needs lint and deploy since this covers all failures based
+        # on he chain.
+        needs: [lint, test, build, deploy]
+        -name: Output information
+          run: |
+            echo "Something seems to have gone wrong. Please check the logs."
+            echo "${{ github }}"
+
