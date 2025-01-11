@@ -1,0 +1,87 @@
+name: Use Reuse Workflow: Website Deployment
+on:
+  push:
+    branches:
+      - main
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        # Run npm ci to install iff cache hit failed.
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Lint code
+        run: npm run lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        # Run npm ci to install iff cache hit failed.
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Test code
+        id: run-tests
+        run: npm run test
+      - name: Upload test report
+        #  Upload test report if the tests failed.
+        if: failure() && steps.run-tests.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: test.json
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        # Run npm ci to install iff cache hit failed.
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Build website
+        id: build-website
+        run: npm run build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files
+          path: dist
+  deploy:
+    needs: build
+    # Deploy using the re-usable workflow..
+    uses: ./.github/workflows/reusable.yml
+  report:
+      # Run this step only if something fails in the previous steps.
+      needs: [lint, deploy]
+      if: failure()
+      runs-on: ubuntu-latest
+      steps:
+        - name: Output information
+          run: |
+            echo "Something seems to have gone wrong. Please check the logs."
+            echo "${{ github }}"
+

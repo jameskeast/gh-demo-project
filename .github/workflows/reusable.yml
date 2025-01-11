@@ -1,0 +1,9 @@
+# Example reusable workflow.
+name: Reusable Deploy
+on: workflow_call  # run when called from another workflow.
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output information
+        run: echo "Deploying...(simulate)"
