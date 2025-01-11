@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         # Run with multiple supported node versions on different OSes.
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [12, 14, 16, 18, 20]
         operating-system: [ubuntu-latest, windows-latest, macOS-latest]
     runs-on:  ${{ matrix.operating-system }}
     steps:
