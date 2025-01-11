@@ -1,6 +1,7 @@
 # Example reusable workflow.
 name: Reusable Deploy
-on: workflow_call:
+on:
+  workflow_call:
     inputs:
       artifact-name:
         description: 'Name of the artefact to deploy'
