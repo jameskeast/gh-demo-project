@@ -83,7 +83,7 @@ jobs:
       - name: Print Deploy Output
         run: |
           echo "Deployment result: ${{ needs.deploy.outputs.result }}"
-          echo "${{ github }}"
+          echo "${{ toJson(github) }}"
   report:
       # Run this step only if something fails in the previous steps.
       needs: [lint, deploy]
