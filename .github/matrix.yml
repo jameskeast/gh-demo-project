@@ -1,0 +1,32 @@
+name: Matrx Demo
+on: push
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        # Run with multiple supported node versions on different OSes.
+        node-version: [12.x, 14.x, 16.x]
+        operating-system: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on:  ${{ matrix.operating-system }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          # Run with all supported Node.js versions.
+          node-version: ${{ matrix.node-version }}
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        # Run npm ci to install iff cache hit failed.
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Build website
+        id: build-website
+        run: npm run build
