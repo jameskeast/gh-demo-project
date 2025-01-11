@@ -1,9 +1,21 @@
 # Example reusable workflow.
 name: Reusable Deploy
-on: workflow_call  # run when called from another workflow.
+on: workflow_call:
+    inputs:
+      artifact-name:
+        description: 'Name of the artefact to deploy'
+        required: false
+        default: 'dist'
+        type: string
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Get Artefacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.event.inputs.artifact-name }}
+      - name: List files
+        run: ls -l ${{ github.event.inputs.artifact-name }}
       - name: Output information
         run: echo "Deploying...(simulate)"
