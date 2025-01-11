@@ -37,7 +37,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Test code
-        id: run-tests  # Give this step an ID so we can reference it below.
+        id: run-tests
         run: npm run test
       - name: Upload test report
         #  Upload test report if the tests failed.
