@@ -1,4 +1,4 @@
-name: Use Reuse Workflow: Website Deployment
+name: Uses Reuse Workflow for Website Deployment
 on:
   push:
     branches:
