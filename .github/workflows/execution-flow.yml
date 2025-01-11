@@ -81,7 +81,7 @@ jobs:
       # Run this step only if something fails in the previous steps.
       # Really only needs lint and deploy since this covers all failures based
       # on he chain.
-      needs: [lint, test, build, deploy]
+      needs: [lint, deploy]
       steps:
         - name: Output information
           run: |
