@@ -33,8 +33,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Test code
+        id: run-tests  # Give this step an ID so we can reference it below.
         run: npm run test
       - name: Upload test report
+        #  Upload test report if the tests failed.
+        if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: test-report
