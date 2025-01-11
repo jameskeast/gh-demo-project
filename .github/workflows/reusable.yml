@@ -15,15 +15,15 @@ on:
 jobs:
   deploy:
     outputs:
-        outcome: ${{ steps.set-result.outputs.step-result }}
+        outcome: ${{ steps.set-result.outputs.result }}
     runs-on: ubuntu-latest
     steps:
       - name: Get Artefacts
         uses: actions/download-artifact@v3
         with:
-          name: ${{ github.event.inputs.artifact-name }}
+          name: ${{ inputs.artifact-name }}
       - name: List files
-        run: ls -l ${{ github.event.inputs.artifact-name }}
+        run: ls -l ${{ inputs.artifact-name }}
       - name: Output information
         run: echo "Deploying...(simulate)"
       - name: Set result output
